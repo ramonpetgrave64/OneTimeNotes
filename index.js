@@ -27,7 +27,7 @@ app.get('/api/get/:link', (req, res) => {
     const note = retrieve_note(link);
     res.send(note);
   } catch (e) {
-    console.log(e);
+    console.error(e.message);
     res.send('Unable to retrieve this note');
   };
 });
@@ -78,15 +78,20 @@ function store_note(note) {
 }
 
 function retrieve_note(link) {
-  const material = JSON.parse(
-    decrypt(decode(link), algorithm, link_key, link_iv)
-  );
-  console.log(material)
+  var material;
+  try {
+    material = JSON.parse(
+      decrypt(decode(link), algorithm, link_key, link_iv)
+    );
+  } catch(e) {
+    throw new Error(`Unable to decrypt link ${link}`);
+  }
   const key = Buffer.from(material.key, internal_encoding);
   const iv = Buffer.from(material.iv, internal_encoding);
   if (material.iv in notes) {
     const cyphertext = notes[material.iv];
     const plaintext = decrypt(cyphertext, algorithm, key, iv);
+    delete notes[material.iv];
     return plaintext;
   } else {
     throw new Error('This note is not indexed.');
