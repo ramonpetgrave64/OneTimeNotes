@@ -1,0 +1,12 @@
+extends layout.pug
+
+block content
+    div.container
+        h2 Retrieved Note
+        form
+            div.form-group
+                textarea.form-control#noteTextarea(
+                    name="note" 
+                    rows="15"
+                    readonly
+                ) #{note}      

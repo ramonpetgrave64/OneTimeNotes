@@ -1,0 +1,26 @@
+extends layout.pug
+
+block content
+    div.container
+        form(action="/note" method="POST")
+            div.form-group
+                h2
+                    label(for="note") Note to Send
+                textarea.form-control#noteTextarea(
+                    name="note" 
+                    rows="15" 
+                    aria-describedby="noteHelp" 
+                    placeholder='Your note to send'
+                )
+            button.btn.btn-primary(type='submit') Submit
+    div.container
+        p
+            h2 How it works:
+            ol
+                li You send your note to the server
+                li The server generates an encryption key and encrypts your note before storage
+                li The server returns a link that contains the key needed to decrypt your note,
+                    | while discarding the encryption key from storage
+                li You send the link to your receiver
+                li Your receiver uses the link, and the server returns the decrypted note,
+                    | while discarding the encrypted note from storage
